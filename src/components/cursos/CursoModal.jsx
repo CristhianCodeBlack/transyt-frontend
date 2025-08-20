@@ -238,18 +238,9 @@ const CursoModal = ({ curso, onClose }) => {
             
             const response = await api.post('/evaluaciones/simple', testCompleto);
             console.log('Test nuevo creado:', response.data);
-              
-              // Marcar el test como no-nuevo para evitar duplicación
-              test.isNew = false;
-              // Extraer ID del response si es posible
-              const match = responseText.match(/ID: (\d+)/);
-              if (match) {
-                test.id = parseInt(match[1]);
-              }
-            } else {
-              const errorText = await response.text();
-              console.error('Error creando test:', errorText);
-            }
+            
+            // Marcar el test como no-nuevo para evitar duplicación
+            test.isNew = false;
             
           } else if (esTestExistente) {
             // ACTUALIZAR TEST EXISTENTE (solo preguntas)
@@ -262,13 +253,9 @@ const CursoModal = ({ curso, onClose }) => {
             
             const response = await api.post('/evaluaciones/actualizar-preguntas', updateData);
             console.log('Preguntas actualizadas:', response.data);
-              
-              // Limpiar bandera de cambios
-              test.hasChanges = false;
-            } else {
-              const errorText = await response.text();
-              console.error('Error actualizando preguntas:', errorText);
-            }
+            
+            // Limpiar bandera de cambios
+            test.hasChanges = false;
           }
           
         } catch (error) {
