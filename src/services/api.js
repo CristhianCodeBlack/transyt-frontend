@@ -1,6 +1,12 @@
 import axios from 'axios';
 
+// Configuración de API URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+
+// Debug: mostrar qué URL se está usando
+console.log('🔗 API Base URL:', API_BASE_URL);
+console.log('🌍 Environment:', import.meta.env.MODE);
+console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
 
 // Crear instancia de axios
 const api = axios.create({
