@@ -56,6 +56,7 @@ const CursoViewer = ({ cursoId, onBack }) => {
       } else {
         // Cargar desde servidor
         const response = await api.get(`/modulo-progreso/curso/${cursoId}`);
+        data = response.data;
         
         console.log('Datos del progreso cargados desde servidor:', data);
         console.log('Número de módulos:', data.modulos?.length);
@@ -171,8 +172,6 @@ const CursoViewer = ({ cursoId, onBack }) => {
               }, 1500);
             }
           }
-        }
-
     } catch (error) {
       console.error('Error:', error);
       toast.error('❌ Error de conexión al completar módulo');
@@ -253,7 +252,6 @@ const CursoViewer = ({ cursoId, onBack }) => {
             duration: 2000
           });
         }, 500);
-      }
     } catch (error) {
       console.error('Error:', error);
       toast.error('Error al marcar elemento como completado');
