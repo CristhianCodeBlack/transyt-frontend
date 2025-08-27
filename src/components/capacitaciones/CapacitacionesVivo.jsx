@@ -187,6 +187,12 @@ const CapacitacionModal = ({ capacitacion, cursos, onClose, onSave }) => {
     setLoading(true);
     
     try {
+      console.log('=== ENVIANDO CAPACITACIÓN ===');
+      console.log('FormData:', formData);
+      console.log('CursoId tipo:', typeof formData.cursoId);
+      console.log('FechaInicio:', formData.fechaInicio);
+      console.log('FechaFin:', formData.fechaFin);
+      
       const response = await api.post('/capacitaciones-vivo', formData);
       toast.success('Capacitación creada exitosamente');
       onSave();
