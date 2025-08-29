@@ -202,7 +202,7 @@ const Navbar = () => {
                     {item.label}
                   </Link>
                 );
-              })
+              })}
             </div>
           </div>
 
