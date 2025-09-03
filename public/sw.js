@@ -1,5 +1,5 @@
-const CACHE_NAME = 'transyt-v2-fast';
-const STATIC_CACHE = 'transyt-static-v2';
+const CACHE_NAME = 'transyt-v3-fixed';
+const STATIC_CACHE = 'transyt-static-v3';
 
 // Solo cachear recursos estáticos críticos
 const STATIC_ASSETS = [
@@ -10,51 +10,68 @@ const STATIC_ASSETS = [
 // No cachear APIs para evitar datos obsoletos
 const NO_CACHE_URLS = [
   '/api/',
-  'transyt-backend.onrender.com'
+  'transyt-backend.onrender.com',
+  'localhost:8080',
+  '/auth/',
+  '/login',
+  '/admin',
+  '/empleado',
+  '/instructor'
 ];
 
 self.addEventListener('install', (event) => {
+  console.log('SW: Installing');
   self.skipWaiting(); // Activar inmediatamente
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then((cache) => cache.addAll(STATIC_ASSETS))
-      .catch(() => {}) // No fallar si no se puede cachear
+      .then((cache) => {
+        console.log('SW: Cache opened');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .catch((error) => {
+        console.log('SW: Cache failed', error);
+      })
   );
 });
 
 self.addEventListener('fetch', (event) => {
   const url = event.request.url;
   
-  // No cachear APIs ni requests externos
+    // No cachear APIs ni requests externos - pasar directamente
   if (NO_CACHE_URLS.some(pattern => url.includes(pattern))) {
-    return event.respondWith(fetch(event.request));
+    event.respondWith(fetch(event.request));
+    return;
   }
   
-  // Cache-first para recursos estáticos
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request)
-          .then((fetchResponse) => {
-            // Solo cachear recursos exitosos y estáticos
-            if (fetchResponse.status === 200 && 
-                (url.includes('.js') || url.includes('.css') || url.includes('.png'))) {
-              const responseClone = fetchResponse.clone();
-              caches.open(STATIC_CACHE)
-                .then((cache) => cache.put(event.request, responseClone))
-                .catch(() => {}); // No fallar si no se puede cachear
-            }
-            return fetchResponse;
-          })
-          .catch(() => {
-            // Fallback para offline
-            return caches.match('/');
-          });
-      })
-  );
+  // Solo cachear recursos estáticos (JS, CSS, imágenes)
+  if (url.includes('.js') || url.includes('.css') || url.includes('.png') || 
+      url.includes('.jpg') || url.includes('.svg') || url.includes('.ico')) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          if (response) {
+            return response;
+          }
+          return fetch(event.request)
+            .then((fetchResponse) => {
+              if (fetchResponse.status === 200) {
+                const responseClone = fetchResponse.clone();
+                caches.open(STATIC_CACHE)
+                  .then((cache) => cache.put(event.request, responseClone))
+                  .catch(() => {});
+              }
+              return fetchResponse;
+            })
+            .catch(() => caches.match('/'));
+        })
+    );
+  } else {
+    // Para todo lo demás (HTML, rutas), usar network-first
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match('/') || caches.match('/index.html'))
+    );
+  }
 });
 
 self.addEventListener('activate', (event) => {
