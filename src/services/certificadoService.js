@@ -31,7 +31,7 @@ export const certificadosAdminService = {
       console.log('Respuesta certificados:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error obteniendo certificados:', error.response?.status, error.response?.data);
+      console.error('Error obteniendo certificados:', encodeURIComponent(error.response?.status), encodeURIComponent(JSON.stringify(error.response?.data)));
       throw error;
     }
   },
@@ -41,7 +41,7 @@ export const certificadosAdminService = {
       const response = await api.put(`/certificados/admin/${certificadoId}/revocar`);
       return response.data;
     } catch (error) {
-      console.error('Error revocando certificado:', error.response?.status, error.response?.data);
+      console.error('Error revocando certificado:', encodeURIComponent(error.response?.status), encodeURIComponent(JSON.stringify(error.response?.data)));
       throw error;
     }
   },
@@ -51,7 +51,7 @@ export const certificadosAdminService = {
       const response = await api.get('/certificados/debug/auth');
       return response.data;
     } catch (error) {
-      console.error('Error en debug auth:', error);
+      console.error('Error en debug auth:', encodeURIComponent(error.message));
       throw error;
     }
   }
