@@ -36,7 +36,7 @@ const CursoViewer = ({ cursoId, onBack }) => {
   const loadProgresoCurso = async () => {
     try {
       console.log('=== CARGANDO PROGRESO CURSO ===');
-      console.log('CursoId:', encodeURIComponent(cursoId));
+      console.log('CursoId:', encodeURIComponent(cursoId || ''));
       console.log('Navigator online:', navigator.onLine);
       
       let data;
